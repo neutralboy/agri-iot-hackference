@@ -1,0 +1,19 @@
+{
+    "presets": [
+        "env",
+        "react",
+        "es2016",
+        "stage-0"
+    ],
+    "plugins": [
+        "transform-class-properties",
+        [
+            "import",
+            {
+                "libraryName": "antd",
+                "libraryDirectory": "es",
+                "style": "css"
+            }
+        ]
+    ]
+}
