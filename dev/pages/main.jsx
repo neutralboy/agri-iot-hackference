@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Fab } from '@material-ui/core';
+import { Button, Fab, Typography, Grid, Paper } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import { ResponsiveContainer, LineChart, Line, Tooltip, Legend, XAxis, YAxis, CartesianGrid } from 'recharts';
 import axios from 'axios';
 import moment from 'moment';
@@ -25,14 +22,24 @@ const styles = {
     },
     pad: {
         padding: 15
+    },
+    bold: {
+        fontWeight: "bold"
+    },
+    logoImg: {
+        height: "30rem"
     }
 };
 
-const user = "hri"
+
 class MainPage extends Component {
     state = {
         graph_arr: [],
-        comp_param: "Humidity"
+        comp_param: "Humidity",
+        temp: 0,
+        humidity: 0,
+        soil_moist: 0,
+        pressure: 0.0
     }
     componentWillUnmount() {
         clearInterval(this.interval);
@@ -41,9 +48,12 @@ class MainPage extends Component {
         this.interval = setInterval(() => {
             console.log("HELLO")
             axios.get("/API/graphs/" + this.props.match.params.username).then((r) => {
-                console.log(r.data.results[0])
                 this.setState({
-                    graph_arr: r.data.results
+                    graph_arr: r.data.results,
+                    temp: r.data.results[0].Air_Temp,
+                    soil_moist: r.data.results[0].Soil_Moisture,
+                    humidity: r.data.results[0].Humidity,
+                    pressure: r.data.results[0].Pressure
                 })
             }).catch((e) => {
                 console.log(e);
@@ -57,6 +67,10 @@ class MainPage extends Component {
     handleChange = (d) => {
         this.setState({ comp_param: d });
     };
+    pressureConvert = (a) => {
+        var atm = parseFloat(a) / 101325.0;
+        return atm.toFixed(3);
+    }
     downloadCVV = () => {
         const options = {
             fieldSeparator: ',',
@@ -69,7 +83,7 @@ class MainPage extends Component {
             useKeysAsHeaders: true,
         };
         const csvExporter = new ExportToCsv(options);
-        axios.get("/API/download/graphs/" + user).then((r) => {
+        axios.get("/API/download/graphs/" + this.props.match.params.username).then((r) => {
             csvExporter.generateCsv(r.data);
         }).catch((e) => {
             console.log(e)
@@ -80,19 +94,68 @@ class MainPage extends Component {
         const { classes } = this.props;
         return (
             <React.Fragment>
-                <div className={classes.root}>
-                    <AppBar position="static" color="primary">
-                        <Toolbar>
-                            <Typography variant="h4" color="inherit" className={classes.rubik}>
-                                Log of all agricultural Data
-          </Typography>
-                        </Toolbar>
-                    </AppBar>
-                </div>
                 <br /><br />
                 <div>
-                    <Typography variant="h4" className={classes.rubik}>{this.props.match.params.username}</Typography>
-                    <br />
+                    <div className={classes.pad}>
+                        <Grid container spacing={16}>
+                            <Grid item lg={6}>
+                                <Paper>
+                                    <div className={classes.pad} align="center">
+                                        <Typography variant="body2">Node name: <b>{this.props.match.params.username}</b></Typography>
+                                        <img src="https://i.imgur.com/WS5SsnP.jpg" alt="title" className={classes.logoImg} />
+                                    </div>
+                                </Paper>
+                            </Grid>
+                            <Grid item lg={6}>
+                                <Grid container spacing={16}>
+                                    <Grid item xs={12} lg={6}>
+                                        <Paper>
+                                            <div className={classes.pad} align="center">
+
+                                                <img src="https://i.imgur.com/JMb310P.jpg" alt="temp" height="120" />
+                                                <br /><br />
+                                                <Typography variant="h5" className={classes.rubik}>Temperature</Typography>
+                                                <Typography variant="h3" className={classes.bold}>{this.state.temp}&#8451;</Typography>
+
+
+                                            </div>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={12} lg={6}>
+                                        <Paper>
+                                            <div className={classes.pad} align="center">
+                                                <img src="https://i.imgur.com/kaOd5sp.jpg" alt="temp" height="120" />
+                                                <br /><br />
+                                                <Typography variant="h5" className={classes.rubik}>Soil Moisture</Typography>
+                                                <Typography variant="h3" className={classes.bold}>{this.state.soil_moist}%</Typography>
+                                            </div>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={12} lg={6}>
+                                        <Paper>
+                                            <div className={classes.pad} align="center">
+                                                <img src="https://i.imgur.com/Hb6CDK0.jpg" alt="temp" height="120" />
+                                                <br /><br />
+                                                <Typography variant="h5" className={classes.rubik}>Humidity</Typography>
+                                                <Typography variant="h3" className={classes.bold}>{this.state.humidity}%</Typography>
+                                            </div>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={12} lg={6}>
+                                        <Paper>
+                                            <div className={classes.pad} align="center">
+                                                <img src="https://i.imgur.com/eaN4CuQ.jpg" alt="temp" height="120" />
+                                                <br /><br />
+                                                <Typography variant="h5" className={classes.rubik}>Pressure</Typography>
+                                                <Typography variant="h3" className={classes.bold}>{this.pressureConvert(this.state.pressure)} atm</Typography>
+                                            </div>
+                                        </Paper>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </div>
+                    <br /><br /><br />
                     <div>
                         <div>
                             <Button className={classes.marg} variant="outlined" onClick={() => this.handleChange("Humidity")}>Humidity</Button>
@@ -112,8 +175,8 @@ class MainPage extends Component {
                                 <Line type="monotone" dataKey={this.state.comp_param} stroke="#8884d8" activeDot={{ r: 8 }} />
                             </LineChart>
                         </ResponsiveContainer>
-                        <br/>
-                        
+                        <br />
+
                     </div>
                     <br /><br />
                     <div className={classes.pad}>

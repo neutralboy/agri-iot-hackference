@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import Async from 'react-code-splitting';
+// import Async from 'react-code-splitting';
 import MainPage from './pages/main.jsx';
 
 const theme = createMuiTheme({
@@ -21,7 +21,8 @@ const theme = createMuiTheme({
     },
 });
 
-
+// const MainPage = () => <Async load={import('./pages/main.jsx')} />
+// const MainPage = React.lazy(() => import('./pages/main.jsx'));
 
 export default class RouterComp extends React.Component {
     componentDidMount = () => {
