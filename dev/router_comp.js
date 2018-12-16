@@ -2,8 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-// import Async from 'react-code-splitting';
+import Async from 'react-code-splitting';
 import MainPage from './pages/main.jsx';
+// import GrossData from './pages/gross.jsx';
 
 const theme = createMuiTheme({
     typography: {
@@ -21,8 +22,7 @@ const theme = createMuiTheme({
     },
 });
 
-// const MainPage = () => <Async load={import('./pages/main.jsx')} />
-// const MainPage = React.lazy(() => import('./pages/main.jsx'));
+const GrossData = () => <Async load={import('./pages/gross.jsx')} />
 
 export default class RouterComp extends React.Component {
     componentDidMount = () => {
@@ -35,7 +35,8 @@ export default class RouterComp extends React.Component {
                     <Router>
 
                         <Switch>
-                            <Route path="/:username" component={MainPage} />
+                            <Route path="/gross" exact component={GrossData} />
+                            <Route path="/graphs/:username" component={MainPage} />
                         </Switch>
 
                     </Router>

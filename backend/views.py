@@ -74,6 +74,7 @@ class GetDownloadData(APIView):
         username = self.kwargs['username']
         user = User.objects.get(username=username)
         queryset = DataLoggingModel.objects.filter(
-            user=user).order_by("-created_on")[:100]
+            user=user).order_by("-created_on")[:400]
+        queryset = reversed(queryset)
         serializer = DataLogSerializer(queryset, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
