@@ -1,0 +1,9 @@
+{
+    "short_name": "AGRI",
+    "name": "AGRI LOG",
+    "start_url": "/",
+    "background_color": "#954bc5",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#954bc5"
+}

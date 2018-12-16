@@ -23,9 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '3529b_3rcgz1lwmwqb6h(qhk=0d&jhu1i342k(o$*fb6p5p1ru'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['192.168.11.83', 'localhost']
+ALLOWED_HOSTS = ['192.168.11.83', 'localhost',
+                 '142.93.211.163', 'test.pcms.me', '127.0.0.1']
 
 
 # Application definition
