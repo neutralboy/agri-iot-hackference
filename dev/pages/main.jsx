@@ -103,6 +103,8 @@ class MainPage extends Component {
                                     <div className={classes.pad} align="center">
                                         <Typography variant="body2">Node name: <b>{this.props.match.params.username}</b></Typography>
                                         <img src="https://i.imgur.com/WS5SsnP.jpg" alt="title" className={classes.logoImg} />
+
+                                        <p>Gowth Rate is Constant</p>
                                     </div>
                                 </Paper>
                             </Grid>
